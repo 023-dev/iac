@@ -1,0 +1,43 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars.backup
+*.tfplan
+*.tfplan.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+
+# Lambda deployment packages
+modules/lambda/lambda_code/*.zip
+
+# Sensitive files
+*.pem
+*.key
+*credentials*
+*secrets*
+
+# Backup files
+*backup*
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
