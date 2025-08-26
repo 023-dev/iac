@@ -146,7 +146,6 @@ resource "aws_security_group" "ec2_rds_1" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.rds_ec2_1.id]
     description     = "Rule to allow connections to unretired-rds from any instances this security group is attached to"
   }
 
@@ -165,7 +164,6 @@ resource "aws_security_group" "rds_ec2_1" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.ec2_rds_1.id]
     description     = "Rule to allow connections from EC2 instances with sg-074a9c34f5484c4e4 attached"
   }
 
@@ -173,7 +171,6 @@ resource "aws_security_group" "rds_ec2_1" {
     from_port       = -1
     to_port         = -1
     protocol        = "icmp"
-    security_groups = [aws_security_group.ec2_rds_1.id]
     description     = "test icmp"
   }
 
@@ -181,7 +178,6 @@ resource "aws_security_group" "rds_ec2_1" {
     from_port       = -1
     to_port         = -1
     protocol        = "icmp"
-    security_groups = [aws_security_group.ec2_rds_2.id]
   }
 
   tags = {
@@ -227,7 +223,6 @@ resource "aws_security_group" "ec2_rds_2" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.rds_ec2_2.id]
     description     = "Rule to allow connections to unretired-rds from any instances this security group is attached to"
   }
 
@@ -246,7 +241,6 @@ resource "aws_security_group" "rds_ec2_2" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.ec2_rds_2.id]
     description     = "Rule to allow connections from EC2 instances with sg-0b36c50214409f1da attached"
   }
 
@@ -339,4 +333,63 @@ resource "aws_security_group" "launch_wizard" {
   tags = {
     Name = "launch-wizard-1"
   }
+}
+
+resource "aws_security_group_rule" "ec2_to_rds_1" {
+  type                     = "egress"
+  from_port               = 3306
+  to_port                 = 3306
+  protocol                = "tcp"
+  security_group_id       = aws_security_group.ec2_rds_1.id
+  source_security_group_id = aws_security_group.rds_ec2_1.id
+  description             = "Rule to allow connections to unretired-rds"
+}
+
+resource "aws_security_group_rule" "rds_from_ec2_1" {
+  type                     = "ingress"
+  from_port               = 3306
+  to_port                 = 3306
+  protocol                = "tcp"
+  security_group_id       = aws_security_group.rds_ec2_1.id
+  source_security_group_id = aws_security_group.ec2_rds_1.id
+  description             = "Rule to allow connections from EC2 instances"
+}
+
+resource "aws_security_group_rule" "rds_icmp_from_ec2_1" {
+  type                     = "ingress"
+  from_port               = -1
+  to_port                 = -1
+  protocol                = "icmp"
+  security_group_id       = aws_security_group.rds_ec2_1.id
+  source_security_group_id = aws_security_group.ec2_rds_1.id
+  description             = "test icmp"
+}
+
+resource "aws_security_group_rule" "rds_icmp_from_ec2_2" {
+  type                     = "ingress"
+  from_port               = -1
+  to_port                 = -1
+  protocol                = "icmp"
+  security_group_id       = aws_security_group.rds_ec2_1.id
+  source_security_group_id = aws_security_group.ec2_rds_2.id
+}
+
+resource "aws_security_group_rule" "ec2_to_rds_2" {
+  type                     = "egress"
+  from_port               = 3306
+  to_port                 = 3306
+  protocol                = "tcp"
+  security_group_id       = aws_security_group.ec2_rds_2.id
+  source_security_group_id = aws_security_group.rds_ec2_2.id
+  description             = "Rule to allow connections to unretired-rds"
+}
+
+resource "aws_security_group_rule" "rds_from_ec2_2" {
+  type                     = "ingress"
+  from_port               = 3306
+  to_port                 = 3306
+  protocol                = "tcp"
+  security_group_id       = aws_security_group.rds_ec2_2.id
+  source_security_group_id = aws_security_group.ec2_rds_2.id
+  description             = "Rule to allow connections from EC2 instances"
 }

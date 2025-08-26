@@ -41,7 +41,7 @@ export TF_VAR_db_password="your-secure-password"
 terraform import module.vpc.aws_vpc.main vpc-0a0c212e320793d21
 
 # Internet Gateway
-terraform import module.vpc.aws_internet_gateway.main igw-xxxxxxxxx
+terraform import module.vpc.aws_internet_gateway.main igw-034ea3c241efd1c9b
 
 # 서브넷 4개
 terraform import 'module.vpc.aws_subnet.public[0]' subnet-0e794bef748206ac2
@@ -50,15 +50,15 @@ terraform import 'module.vpc.aws_subnet.private[0]' subnet-0d0ad21b8accdcd2a
 terraform import 'module.vpc.aws_subnet.private[1]' subnet-0b347ad9860c7635b
 
 # 라우트 테이블
-terraform import module.vpc.aws_route_table.public rtb-xxxxxxxxx
-terraform import 'module.vpc.aws_route_table.private[0]' rtb-xxxxxxxxx
-terraform import 'module.vpc.aws_route_table.private[1]' rtb-xxxxxxxxx
+terraform import 'module.vpc.aws_route_table.public' rtb-07684620ea725e36d
+terraform import 'module.vpc.aws_route_table.private[0]' rtb-0c4f6a55bd75e335b
+terraform import 'module.vpc.aws_route_table.private[1]' rtb-0bdfc9363a7645d28
 
 # 라우트 테이블 연결
-terraform import 'module.vpc.aws_route_table_association.public[0]' subnet-0e794bef748206ac2/rtb-xxxxxxxxx
-terraform import 'module.vpc.aws_route_table_association.public[1]' subnet-042cd2f47b92e94bf/rtb-xxxxxxxxx
-terraform import 'module.vpc.aws_route_table_association.private[0]' subnet-0d0ad21b8accdcd2a/rtb-xxxxxxxxx
-terraform import 'module.vpc.aws_route_table_association.private[1]' subnet-0b347ad9860c7635b/rtb-xxxxxxxxx
+terraform import 'module.vpc.aws_route_table_association.public[0]' subnet-0e794bef748206ac2/rtb-07684620ea725e36d
+terraform import 'module.vpc.aws_route_table_association.public[1]' subnet-042cd2f47b92e94bf/rtb-07684620ea725e36d
+terraform import 'module.vpc.aws_route_table_association.private[0]' subnet-0d0ad21b8accdcd2a/rtb-0c4f6a55bd75e335b
+terraform import 'module.vpc.aws_route_table_association.private[1]' subnet-0b347ad9860c7635b/rtb-0bdfc9363a7645d28
 ```
 
 ### 보안 그룹 (10개)
@@ -93,7 +93,6 @@ terraform import module.vpc.aws_security_group.launch_wizard sg-0ddcbea3e398c7a6
 
 ### 검증
 ```bash
-terraform plan -target=module.vpc
 # 결과: No changes. Infrastructure is up-to-date.
 ```
 

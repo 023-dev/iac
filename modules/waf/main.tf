@@ -140,7 +140,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "unretired_prod" {
 
 # WAF Association with ALB (if needed)
 resource "aws_wafv2_web_acl_association" "alb_association" {
-  count        = var.alb_arn != "" ? 1 : 0
+  count        = 1
   resource_arn = var.alb_arn
   web_acl_arn  = aws_wafv2_web_acl.unretired_prod.arn
 }

@@ -44,7 +44,7 @@ resource "aws_db_instance" "main" {
   
   # Options
   auto_minor_version_upgrade = true
-  copy_tags_to snapshot     = true
+  copy_tags_to_snapshot     = true
   deletion_protection       = false
   skip_final_snapshot      = true
 

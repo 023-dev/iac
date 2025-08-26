@@ -42,9 +42,7 @@ resource "aws_subnet" "private" {
   availability_zone = var.availability_zones[count.index]
 
   tags = {
-    Name = count.index == 0 ? 
-      "${var.project_name}-subnet-private1-${var.availability_zones[count.index]}" :
-      "${var.project_name}-subnet-private-${substr(var.availability_zones[count.index], -2, 2)}"
+    Name = count.index == 0 ? "${var.project_name}-subnet-private1-${var.availability_zones[count.index]}" : "${var.project_name}-subnet-private-${substr(var.availability_zones[count.index], -2, 2)}"
     Type = "private"
   }
 }
@@ -65,7 +63,7 @@ resource "aws_route_table" "public" {
 
 # Route Table Associations for Public Subnets
 resource "aws_route_table_association" "public" {
-  count = length(aws_subnet.public)
+  count = length(var.public_subnet_cidrs)
 
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
@@ -73,7 +71,7 @@ resource "aws_route_table_association" "public" {
 
 # Route Tables for Private Subnets (각 AZ별로 별도)
 resource "aws_route_table" "private" {
-  count = length(aws_subnet.private)
+  count = length(var.private_subnet_cidrs)
 
   vpc_id = aws_vpc.main.id
 
@@ -84,7 +82,7 @@ resource "aws_route_table" "private" {
 
 # Route Table Associations for Private Subnets
 resource "aws_route_table_association" "private" {
-  count = length(aws_subnet.private)
+  count = length(var.private_subnet_cidrs)
 
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id

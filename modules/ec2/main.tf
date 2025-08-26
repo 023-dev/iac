@@ -48,11 +48,11 @@ resource "aws_eip" "bastion" {
 
 # Route for private subnets to use NAT instance
 resource "aws_route" "private_nat" {
-  count = length(var.private_route_table_ids)
+  count = 2
 
   route_table_id         = var.private_route_table_ids[count.index]
   destination_cidr_block = "0.0.0.0/0"
-  instance_id            = aws_instance.bastion.id
+  network_interface_id   = aws_instance.bastion.primary_network_interface_id
 }
 
 # Development Server
