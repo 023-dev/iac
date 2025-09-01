@@ -16,3 +16,4 @@ db_username = "admin"
 
 # Domain Configuration
 domain_name = "unretired.co.kr"
+
