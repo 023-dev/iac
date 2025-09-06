@@ -1,4 +1,6 @@
 resource "aws_dms_endpoint" "source" {
+  provider = aws.target
+
   endpoint_id = "${var.project_name}-src"
   endpoint_type = "source"
   engine_name = "mysql"
@@ -12,13 +14,17 @@ resource "aws_dms_endpoint" "source" {
 }
 
 resource "aws_dms_endpoint" "target" {
-  endpoint_id = "${var.project_name}-tgt"
+  provider = aws.target
+
+  endpoint_id   = "${var.project_name}-tgt"
   endpoint_type = "target"
-  engine_name = "mysql"
-  username = var.tgt_db_username
-  password = var.tgt_db_password
-  server_name = var.tgt_db_endpoint
-  port = 3306
+  engine_name   = "mysql"
+  username      = var.tgt_db_username
+  password      = var.tgt_db_new_password
+
+  server_name   = aws_db_instance.target.address
+
+  port          = 3306
   database_name = var.tgt_db_name
 
   lifecycle { prevent_destroy = true }
