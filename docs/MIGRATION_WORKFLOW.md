@@ -1,13 +1,13 @@
-# 🚀 AWS 마이그레이션 작업 계획 및 분업 가이드
+# AWS 마이그레이션 작업 계획 및 분업 가이드
 
-**프로젝트**: A계정 → B계정 인프라 마이그레이션  
-**전략**: Blue-Green 배포  
-**예상 기간**: 2-3주  
+**프로젝트**: A계정 → B계정 인프라 마이그레이션
+**전략**: Blue-Green 배포
+**예상 기간**: 2-3주
 **작업 시간**: 업무 시간 외 권장
 
 ---
 
-## 📋 전체 작업 순서
+## 전체 작업 순서
 
 ### Phase 1: 사전 준비 (1-2일)
 ### Phase 2: Import 작업 (2-3일)
@@ -19,33 +19,33 @@
 
 ---
 
-## 👥 팀 구성 및 역할
+## 팀 구성 및 역할
 
-### 🎯 권장 팀 구성 (3-4명)
+### 권장 팀 구성 (3-4명)
 
 | 역할 | 담당자 | 주요 책임 | 필요 스킬 |
-|------|--------|-----------|-----------|
+|---|---|---|---|
 | **DevOps Lead** | 1명 | 전체 기술 총괄, Terraform 작업 | Terraform, AWS, 네트워킹 |
 | **Backend Dev** | 1명 | 애플리케이션, 데이터베이스 | Java/Spring, MySQL, Docker |
 | **Frontend Dev** | 1명 | 프론트엔드, CDN 설정 | React/Vue, CloudFront, S3 |
 | **QA/PM** | 1명 | 테스트, 일정 관리, 문서화 | 테스트, 프로젝트 관리 |
 
-### 🔄 소규모 팀 (2명)
+### 소규모 팀 (2명)
 - **DevOps + Backend**: 인프라 + 백엔드 담당
 - **Frontend + QA**: 프론트엔드 + 테스트 담당
 
 ---
 
-## 📅 Phase별 상세 작업 계획
+## Phase별 상세 작업 계획
 
 ### Phase 1: 사전 준비 (1-2일)
 
-#### 🎯 목표
+#### 목표
 - B계정 기본 설정 완료
 - Terraform 환경 구축
 - 팀 권한 설정
 
-#### 👥 분업
+#### 분업
 
 **DevOps Lead**:
 ```bash
@@ -112,7 +112,7 @@ aws s3 ls s3://unretired-prod-abs --recursive --human-readable --summarize
 - 커뮤니케이션 계획
 ```
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] B계정 기본 설정 완료
 - [ ] Terraform 백엔드 생성 완료
 - [ ] 팀 권한 설정 완료
@@ -122,11 +122,11 @@ aws s3 ls s3://unretired-prod-abs --recursive --human-readable --summarize
 
 ### Phase 2: Import 작업 (2-3일)
 
-#### 🎯 목표
+#### 목표
 - A계정의 67개 리소스를 Terraform 상태로 Import
 - terraform plan 변경사항 0개 달성
 
-#### 👥 분업
+#### 분업
 
 **DevOps Lead** (메인 작업자):
 ```bash
@@ -175,7 +175,7 @@ curl -I https://cdn.unretired.co.kr/
 - 일정 관리
 ```
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] 67개 모든 리소스 Import 완료
 - [ ] `terraform plan` 변경사항 0개 확인
 - [ ] 상태 파일 백업 완료
@@ -184,11 +184,11 @@ curl -I https://cdn.unretired.co.kr/
 
 ### Phase 3: B계정 배포 (1-2일)
 
-#### 🎯 목표
+#### 목표
 - B계정에 동일한 인프라 구축
 - 기본 기능 동작 확인
 
-#### 👥 분업
+#### 분업
 
 **DevOps Lead**:
 ```bash
@@ -240,7 +240,7 @@ aws cloudfront list-distributions --profile target-account
 - 이슈 트래킹
 ```
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] B계정 모든 인프라 배포 완료
 - [ ] 기본 연결성 테스트 통과
 - [ ] 비용 알람 설정 완료
@@ -249,12 +249,12 @@ aws cloudfront list-distributions --profile target-account
 
 ### Phase 4: 데이터 마이그레이션 (3-5일)
 
-#### 🎯 목표
+#### 목표
 - S3 데이터 동기화
 - RDS 데이터 마이그레이션
 - 실시간 동기화 설정
 
-#### 👥 분업
+#### 분업
 
 **DevOps Lead**:
 ```bash
@@ -331,7 +331,7 @@ aws cloudfront create-invalidation \
 - 이슈 트래킹 및 에스컬레이션
 ```
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] S3 데이터 100% 동기화 완료
 - [ ] RDS 데이터 복제 완료
 - [ ] 실시간 동기화 설정 완료
@@ -339,14 +339,14 @@ aws cloudfront create-invalidation \
 
 ---
 
-## 🧪 Phase 5: 테스트 및 검증 (2-3일)
+### Phase 5: 테스트 및 검증 (2-3일)
 
-#### 🎯 목표
+#### 목표
 - 모든 기능 정상 동작 확인
 - 성능 기준 만족 확인
 - 보안 설정 검증
 
-#### 👥 분업
+#### 분업
 
 **QA/PM** (메인 작업자):
 ```bash
@@ -405,7 +405,7 @@ aws cloudfront create-invalidation \
 - 백업 및 복구 테스트
 ```
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] 모든 기능 테스트 통과
 - [ ] 성능 기준 만족 (응답시간 < 2초)
 - [ ] 보안 검증 완료
@@ -413,17 +413,17 @@ aws cloudfront create-invalidation \
 
 ---
 
-## 🔄 Phase 6: DNS 전환 (1일)
+### Phase 6: DNS 전환 (1일)
 
-#### 🎯 목표
+#### 목표
 - 점진적 트래픽 전환
 - 무중단 서비스 달성
 
-#### 👥 분업 (전체 팀 참여)
+#### 분업 (전체 팀 참여)
 
 **시간대별 작업** (업무 시간 외 권장):
 
-#### 🕐 20:00 - 준비 단계
+#### 20:00 - 준비 단계
 **DevOps Lead**:
 ```bash
 # DNS TTL 사전 조정 (1시간 전)
@@ -434,7 +434,7 @@ aws route53 change-resource-record-sets \
 
 **전체 팀**: 대기 상태, 모니터링 준비
 
-#### 🕘 21:00 - 10% 트래픽 전환
+#### 21:00 - 10% 트래픽 전환
 **DevOps Lead**:
 ```bash
 # Route53 Weighted Routing 설정
@@ -447,22 +447,22 @@ aws route53 change-resource-record-sets \
 **Backend Dev**: 로그 모니터링
 **Frontend Dev**: 사용자 경험 모니터링
 
-#### 🕘 21:30 - 50% 트래픽 전환
+#### 21:30 - 50% 트래픽 전환
 **DevOps Lead**: 50% 트래픽 전환
 **전체 팀**: 성능 지표 확인
 
-#### 🕘 22:00 - 90% 트래픽 전환
+#### 22:00 - 90% 트래픽 전환
 **DevOps Lead**: 90% 트래픽 전환
 **전체 팀**: 집중 모니터링
 
-#### 🕘 22:30 - 100% 트래픽 전환
+#### 22:30 - 100% 트래픽 전환
 **DevOps Lead**: 100% 트래픽 전환
 **전체 팀**: 최종 검증
 
-#### 🕘 23:00 - 안정화 확인
+#### 23:00 - 안정화 확인
 **전체 팀**: 1시간 안정성 모니터링
 
-#### ✅ 완료 기준
+#### 완료 기준
 - [ ] 100% 트래픽 B계정으로 전환
 - [ ] 서비스 중단 시간 < 5분
 - [ ] 에러율 < 0.1%
@@ -470,12 +470,12 @@ aws route53 change-resource-record-sets \
 
 ---
 
-## 📊 일일 작업 분담표
+## 일일 작업 분담표
 
 ### Week 1: 준비 및 Import
 
 | 요일 | DevOps Lead | Backend Dev | Frontend Dev | QA/PM |
-|------|-------------|-------------|--------------|-------|
+|---|---|---|---|---|
 | **월** | B계정 설정, 백엔드 구축 | 현재 시스템 문서화 | S3 데이터 분석 | 테스트 계획 수립 |
 | **화** | VPC/보안그룹 Import | RDS 백업 계획 | CDN 설정 분석 | 일정 관리 |
 | **수** | EC2/ALB Import | DB 연결 테스트 | 프론트엔드 빌드 | Import 진행 모니터링 |
@@ -485,7 +485,7 @@ aws route53 change-resource-record-sets \
 ### Week 2: 배포 및 데이터 마이그레이션
 
 | 요일 | DevOps Lead | Backend Dev | Frontend Dev | QA/PM |
-|------|-------------|-------------|--------------|-------|
+|---|---|---|---|---|
 | **월** | B계정 인프라 배포 | 키페어 생성, 설정 | 빌드 배포 | 배포 모니터링 |
 | **화** | S3 데이터 동기화 | RDS 스냅샷 복원 | CDN 설정 확인 | 데이터 검증 |
 | **수** | 실시간 동기화 설정 | DMS 설정 | 캐시 무효화 테스트 | 진행 상황 추적 |
@@ -495,7 +495,7 @@ aws route53 change-resource-record-sets \
 ### Week 3: 테스트 및 전환
 
 | 요일 | DevOps Lead | Backend Dev | Frontend Dev | QA/PM |
-|------|-------------|-------------|--------------|-------|
+|---|---|---|---|---|
 | **월** | 성능 모니터링 | API 테스트 | UI/UX 테스트 | 통합 테스트 |
 | **화** | 보안 검증 | 데이터 정합성 확인 | 브라우저 테스트 | 성능 테스트 |
 | **수** | DNS 전환 준비 | 백엔드 최종 점검 | 프론트엔드 최종 점검 | 사용자 승인 테스트 |
@@ -504,13 +504,13 @@ aws route53 change-resource-record-sets \
 
 ---
 
-## 🚨 비상 대응 계획
+## 비상 대응 계획
 
 ### 역할별 비상 연락망
 ```
 DevOps Lead: 기술적 이슈 총괄
 Backend Dev: 데이터베이스/API 이슈
-Frontend Dev: 웹사이트/CDN 이슈  
+Frontend Dev: 웹사이트/CDN 이슈
 QA/PM: 전체 조율 및 의사결정
 ```
 
@@ -529,7 +529,7 @@ aws route53 change-resource-record-sets \
 
 ---
 
-## 📞 커뮤니케이션 계획
+## 커뮤니케이션 계획
 
 ### 일일 스탠드업 (15분)
 - **시간**: 매일 오전 9시
@@ -548,7 +548,7 @@ aws route53 change-resource-record-sets \
 
 ---
 
-## 🎯 성공 기준
+## 성공 기준
 
 ### 기술적 기준
 - [ ] 서비스 중단 시간 < 5분
@@ -564,6 +564,6 @@ aws route53 change-resource-record-sets \
 
 ---
 
-**작성자**: AWS Q Developer CLI  
-**작성일**: 2025-08-22  
+**작성자**: AWS Q Developer CLI
+**작성일**: 2025-08-22
 **버전**: 1.0

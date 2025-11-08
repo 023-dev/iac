@@ -1,28 +1,13 @@
-# 🧩 Terraform 모듈 상세 가이드
+# Terraform 모듈 상세 가이드
 
-**목적**: 각 모듈의 구조, 역할, 사용법에 대한 상세 설명  
+**목적**: 각 모듈의 구조, 역할, 사용법에 대한 상세 설명
 **대상**: 개발자, DevOps 엔지니어, 시스템 관리자
 
 ---
 
-## 📋 모듈 개요
+## VPC 모듈 (`modules/vpc/`)
 
-| 모듈명 | 주요 리소스 | 의존성 | 우선순위 |
-|--------|-------------|--------|----------|
-| **vpc** | VPC, 서브넷, 보안그룹 | 없음 | 1 (최우선) |
-| **s3** | S3 버킷, 정책 | 없음 | 2 |
-| **ec2** | EC2, ALB, EIP | vpc | 3 |
-| **rds** | RDS, DB서브넷그룹 | vpc | 4 |
-| **cloudfront** | CloudFront, OAC | s3 | 5 |
-| **lambda** | Lambda, IAM | s3 | 6 |
-| **waf** | WAF, 로깅 | ec2 (ALB) | 7 |
-| **route53** | DNS, 레코드 | ec2, cloudfront | 8 (최종) |
-
----
-
-## 🌐 VPC 모듈 (`modules/vpc/`)
-
-### 📁 파일 구조
+### 파일 구조
 ```
 vpc/
 ├── main.tf              # VPC, 서브넷, 라우팅
@@ -31,13 +16,13 @@ vpc/
 └── outputs.tf          # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **Multi-AZ VPC 구성**: ap-northeast-2a, 2c
 - **서브넷 분리**: Public 2개, Private 2개
 - **보안그룹 관리**: 10개 보안그룹 + 상호 참조
 - **라우팅**: Internet Gateway, NAT Instance
 
-### 📊 리소스 상세
+### 리소스 상세
 
 #### VPC 및 네트워킹
 ```hcl
@@ -70,11 +55,11 @@ aws_route_table.private[1]  # 2c용
 9. launch_wizard       # ALB용 보안그룹
 ```
 
-### 🔧 사용법
+### 사용법
 ```hcl
 module "vpc" {
   source = "./modules/vpc"
-  
+
   project_name         = "unretired"
   vpc_cidr            = "10.0.0.0/16"
   availability_zones  = ["ap-northeast-2a", "ap-northeast-2c"]
@@ -83,7 +68,7 @@ module "vpc" {
 }
 ```
 
-### 📤 주요 출력값
+### 주요 출력값
 - `vpc_id`: VPC ID
 - `public_subnet_ids`: Public 서브넷 ID 리스트
 - `private_subnet_ids`: Private 서브넷 ID 리스트
@@ -91,9 +76,9 @@ module "vpc" {
 
 ---
 
-## 🖥️ EC2 모듈 (`modules/ec2/`)
+## EC2 모듈 (`modules/ec2/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 ec2/
 ├── main.tf              # EC2, ALB, EIP
@@ -104,13 +89,13 @@ ec2/
     └── app_server.sh    # 앱 서버 설정
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **EC2 인스턴스 3개**: Bastion, Dev, Prod
 - **Load Balancer**: ALB + Target Groups
 - **네트워킹**: Elastic IP, 라우팅
 - **자동화**: User Data 스크립트
 
-### 📊 리소스 상세
+### 리소스 상세
 
 #### EC2 인스턴스
 ```hcl
@@ -142,17 +127,17 @@ aws_lb_target_group_attachment # Dev, Prod 연결
 aws_lb_listener.main           # HTTP 리스너
 ```
 
-### 🔧 사용법
+### 사용법
 ```hcl
 module "ec2" {
   source = "./modules/ec2"
-  
+
   project_name            = var.project_name
   vpc_id                 = module.vpc.vpc_id
   public_subnet_ids      = module.vpc.public_subnet_ids
   private_subnet_ids     = module.vpc.private_subnet_ids
   key_name               = "unretired-dev"
-  
+
   # 보안그룹 연결
   nat_instance_sg_id = module.vpc.nat_instance_sg_id
   bastion_sg_id      = module.vpc.bastion_sg_id
@@ -160,16 +145,16 @@ module "ec2" {
 }
 ```
 
-### 📤 주요 출력값
+### 주요 출력값
 - `bastion_public_ip`: Bastion 공인 IP
 - `alb_dns_name`: ALB DNS 이름
 - `*_instance_id`: 각 인스턴스 ID
 
 ---
 
-## 🗄️ RDS 모듈 (`modules/rds/`)
+## RDS 모듈 (`modules/rds/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 rds/
 ├── main.tf         # RDS 인스턴스, DB 서브넷 그룹
@@ -177,13 +162,13 @@ rds/
 └── outputs.tf     # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **MySQL 8.0.40**: 관리형 데이터베이스
 - **Multi-AZ 지원**: 고가용성 구성
 - **보안**: 암호화, 보안그룹
 - **백업**: 자동 백업 설정
 
-### 📊 리소스 상세
+### 리소스 상세
 ```hcl
 aws_db_subnet_group.main    # DB 서브넷 그룹
 aws_db_instance.main        # RDS MySQL 인스턴스
@@ -196,11 +181,11 @@ aws_db_instance.main        # RDS MySQL 인스턴스
 - Encryption: 활성화
 ```
 
-### 🔧 사용법
+### 사용법
 ```hcl
 module "rds" {
   source = "./modules/rds"
-  
+
   project_name       = var.project_name
   vpc_id            = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnet_ids
@@ -208,7 +193,7 @@ module "rds" {
     module.vpc.rds_main_sg_id,
     module.vpc.rds_ec2_1_sg_id
   ]
-  
+
   db_username = "admin"
   db_password = var.db_password  # 민감 정보
 }
@@ -216,9 +201,9 @@ module "rds" {
 
 ---
 
-## 🪣 S3 모듈 (`modules/s3/`)
+## S3 모듈 (`modules/s3/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 s3/
 ├── main.tf         # 7개 S3 버킷 + 설정
@@ -226,13 +211,13 @@ s3/
 └── outputs.tf     # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **7개 S3 버킷**: 용도별 분리
 - **보안 설정**: Public Access Block
 - **버전 관리**: 중요 버킷 버전 관리
 - **CORS**: 비디오 스트리밍 지원
 
-### 📊 버킷 구성
+### 버킷 구성
 ```hcl
 # 프론트엔드 버킷
 dev-unretired-fe      # 개발 프론트엔드
@@ -246,7 +231,7 @@ unretired-dev-mp4     # 개발 MP4 파일
 unretired-dev-origin  # 개발 원본 파일
 ```
 
-### 🔧 보안 설정
+### 보안 설정
 ```hcl
 # 모든 버킷에 적용
 aws_s3_bucket_public_access_block
@@ -264,9 +249,9 @@ aws_s3_bucket_cors_configuration
 
 ---
 
-## 🌍 CloudFront 모듈 (`modules/cloudfront/`)
+## CloudFront 모듈 (`modules/cloudfront/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 cloudfront/
 ├── main.tf         # 3개 CloudFront 배포 + OAC
@@ -274,13 +259,13 @@ cloudfront/
 └── outputs.tf     # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **3개 배포**: CDN, Frontend, Dev Frontend
 - **Origin Access Control**: S3 보안 접근
 - **SSL 인증서**: ACM 인증서 연결
 - **캐시 최적화**: 용도별 캐시 정책
 
-### 📊 배포 구성
+### 배포 구성
 
 #### 1. CDN 배포 (EK668CQHBMBEI)
 ```hcl
@@ -289,7 +274,7 @@ cloudfront/
 
 Origins (3개):
 - unretired-dev-abs    # 개발 HLS
-- unretired-prod-abs   # 프로덕션 HLS  
+- unretired-prod-abs   # 프로덕션 HLS
 - unretired-dev-origin # 개발 원본
 
 Cache Behaviors (3개):
@@ -332,9 +317,9 @@ Features:
 
 ---
 
-## ⚡ Lambda 모듈 (`modules/lambda/`)
+## Lambda 모듈 (`modules/lambda/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 lambda/
 ├── main.tf              # Lambda 함수, IAM
@@ -345,13 +330,13 @@ lambda/
     └── quicksetup_lifecycle.py    # AWS 관리
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **비디오 변환**: MP4 → HLS 변환
 - **AWS 관리**: QuickSetup 라이프사이클
 - **IAM 관리**: 최소 권한 정책
 - **로깅**: CloudWatch 통합
 
-### 📊 함수 구성
+### 함수 구성
 
 #### 1. convert-mp4-to-hls
 ```python
@@ -386,9 +371,9 @@ IAM Permissions:
 
 ---
 
-## 🛡️ WAF 모듈 (`modules/waf/`)
+## WAF 모듈 (`modules/waf/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 waf/
 ├── main.tf         # WAF 웹 ACL, 규칙
@@ -396,19 +381,19 @@ waf/
 └── outputs.tf     # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **웹 보안**: SQL Injection, XSS 방어
 - **Rate Limiting**: DDoS 방어
 - **Geo Blocking**: 국가별 차단
 - **로깅**: CloudWatch 통합
 
-### 📊 보안 규칙
+### 보안 규칙
 ```hcl
 Rule 1: AWS-AWSManagedRulesCommonRuleSet
 - 일반적인 웹 공격 방어
 - SQL Injection, XSS 등
 
-Rule 2: AWS-AWSManagedRulesKnownBadInputsRuleSet  
+Rule 2: AWS-AWSManagedRulesKnownBadInputsRuleSet
 - 알려진 악성 입력 차단
 - 취약점 스캐너 차단
 
@@ -423,9 +408,9 @@ Rule 4: Geo Blocking (선택적)
 
 ---
 
-## 🌐 Route53 모듈 (`modules/route53/`)
+## Route53 모듈 (`modules/route53/`)
 
-### 📁 파일 구조
+### 파일 구조
 ```
 route53/
 ├── main.tf         # 호스팅 존, DNS 레코드
@@ -433,13 +418,13 @@ route53/
 └── outputs.tf     # 출력값
 ```
 
-### 🎯 주요 기능
+### 주요 기능
 - **도메인 관리**: unretired.co.kr
 - **서브도메인**: 5개 서브도메인
 - **SSL 검증**: ACM 인증서 검증
 - **이메일**: Google Workspace 연결
 
-### 📊 DNS 레코드 (15개)
+### DNS 레코드 (15개)
 
 #### 루트 도메인
 ```hcl
@@ -449,7 +434,7 @@ A Record: unretired.co.kr
 MX Record: 이메일
 - Google Workspace (5개 서버)
 
-TXT Record: 
+TXT Record:
 - Google 사이트 인증
 ```
 
@@ -458,7 +443,7 @@ TXT Record:
 api.unretired.co.kr
 - A Record (Alias) → ALB
 
-dev.unretired.co.kr  
+dev.unretired.co.kr
 - A Record (Alias) → ALB
 
 cdn.unretired.co.kr
@@ -483,31 +468,7 @@ CNAME Records (2개):
 
 ---
 
-## 🔄 모듈 간 의존성
-
-### 의존성 그래프
-```
-vpc (기반)
-├── ec2 (vpc 의존)
-├── rds (vpc 의존)
-└── s3 (독립)
-    └── cloudfront (s3 의존)
-        └── route53 (cloudfront, ec2 의존)
-            └── lambda (s3 의존)
-                └── waf (ec2 의존)
-```
-
-### 배포 순서
-1. **vpc** + **s3** (병렬 가능)
-2. **ec2** + **rds** (vpc 완료 후)
-3. **cloudfront** (s3 완료 후)
-4. **lambda** (s3 완료 후)
-5. **waf** (ec2 완료 후)
-6. **route53** (모든 서비스 완료 후)
-
----
-
-## 🛠️ 개발 가이드
+## 개발 가이드
 
 ### 새 모듈 추가 시
 1. `modules/` 하위에 디렉토리 생성
@@ -535,8 +496,8 @@ terraform graph | dot -Tpng > graph.png
 
 ---
 
-**작성자**: AWS Q Developer CLI  
-**작성일**: 2025-08-22  
-**버전**: 1.0  
-**총 모듈**: 8개  
+**작성자**: AWS Q Developer CLI
+**작성일**: 2025-08-22
+**버전**: 1.0
+**총 모듈**: 8개
 **총 리소스**: 67개

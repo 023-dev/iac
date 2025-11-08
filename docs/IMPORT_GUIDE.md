@@ -1,12 +1,12 @@
-# 📥 Terraform Import 가이드
+# Terraform Import 가이드
 
-**목적**: A계정의 기존 AWS 리소스를 Terraform 상태로 가져오기  
-**전략**: 의존성 순서에 따른 단계별 Import  
+**목적**: A계정의 기존 AWS 리소스를 Terraform 상태로 가져오기
+**전략**: 의존성 순서에 따른 단계별 Import
 **검증**: terraform plan으로 변경사항 0개 확인
 
 ---
 
-## 🎯 Import 전략
+## Import 전략
 
 ### 1. 사전 준비
 ```bash
@@ -33,7 +33,7 @@ export TF_VAR_db_password="your-secure-password"
 
 ---
 
-## 🌐 Phase 1: VPC 및 네트워킹
+## Phase 1: VPC 및 네트워킹
 
 ### VPC 기본 리소스
 ```bash
@@ -98,7 +98,7 @@ terraform import module.vpc.aws_security_group.launch_wizard sg-0ddcbea3e398c7a6
 
 ---
 
-## 🪣 Phase 2: S3 버킷
+## Phase 2: S3 버킷
 
 ### S3 버킷 (7개)
 ```bash
@@ -142,7 +142,7 @@ terraform plan -target=module.s3
 
 ---
 
-## 🖥️ Phase 3: EC2 인스턴스
+## Phase 3: EC2 인스턴스
 
 ### EC2 인스턴스 (3개)
 ```bash
@@ -193,7 +193,7 @@ terraform plan -target=module.ec2
 
 ---
 
-## 🗄️ Phase 4: RDS 데이터베이스
+## Phase 4: RDS 데이터베이스
 
 ### RDS 리소스
 ```bash
@@ -212,7 +212,7 @@ terraform plan -target=module.rds
 
 ---
 
-## 🌍 Phase 5: CloudFront 배포
+## Phase 5: CloudFront 배포
 
 ### Origin Access Control
 ```bash
@@ -244,7 +244,7 @@ terraform plan -target=module.cloudfront
 
 ---
 
-## ⚡ Phase 6: Lambda 함수
+## Phase 6: Lambda 함수
 
 ### IAM 역할
 ```bash
@@ -287,7 +287,7 @@ terraform plan -target=module.lambda
 
 ---
 
-## 🛡️ Phase 7: WAF 웹 ACL
+## Phase 7: WAF 웹 ACL
 
 ### WAF 리소스
 ```bash
@@ -312,7 +312,7 @@ terraform plan -target=module.waf
 
 ---
 
-## 🌐 Phase 8: Route53 DNS
+## Phase 8: Route53 DNS
 
 ### 호스팅 존
 ```bash
@@ -362,7 +362,7 @@ terraform plan -target=module.route53
 
 ---
 
-## ✅ 최종 검증
+## 최종 검증
 
 ### 전체 계획 확인
 ```bash
@@ -386,7 +386,7 @@ terraform output
 
 ---
 
-## 🚨 문제 해결
+## 문제 해결
 
 ### 일반적인 Import 오류
 
@@ -432,23 +432,23 @@ terraform state rm module.problematic_module.resource_name
 
 ---
 
-## 📊 Import 진행 체크리스트
+## Import 진행 체크리스트
 
-### Phase 1: VPC ✅
+### Phase 1: VPC
 - [ ] VPC
-- [ ] Internet Gateway  
+- [ ] Internet Gateway
 - [ ] 서브넷 4개
 - [ ] 라우트 테이블 3개
 - [ ] 라우트 테이블 연결 4개
 - [ ] 보안그룹 10개
 
-### Phase 2: S3 ✅
+### Phase 2: S3
 - [ ] S3 버킷 7개
 - [ ] 버전 관리 설정
 - [ ] Public Access Block 7개
 - [ ] CORS 설정 2개
 
-### Phase 3: EC2 ✅
+### Phase 3: EC2
 - [ ] EC2 인스턴스 3개
 - [ ] Elastic IP 1개
 - [ ] ALB 1개
@@ -457,41 +457,31 @@ terraform state rm module.problematic_module.resource_name
 - [ ] ALB Listener 1개
 - [ ] NAT 라우팅 2개
 
-### Phase 4: RDS ✅
+### Phase 4: RDS
 - [ ] DB 서브넷 그룹 1개
 - [ ] RDS 인스턴스 1개
 
-### Phase 5: CloudFront ✅
+### Phase 5: CloudFront
 - [ ] Origin Access Control 5개
 - [ ] CloudFront 배포 3개
 
-### Phase 6: Lambda ✅
+### Phase 6: Lambda
 - [ ] IAM 역할 2개
 - [ ] IAM 정책 1개
 - [ ] CloudWatch 로그 그룹 2개
 - [ ] Lambda 함수 2개
 
-### Phase 7: WAF ✅
+### Phase 7: WAF
 - [ ] CloudWatch 로그 그룹 1개
 - [ ] WAF 웹 ACL 1개
 - [ ] WAF 로깅 설정 1개
 - [ ] WAF-ALB 연결 1개
 
-### Phase 8: Route53 ✅
+### Phase 8: Route53
 - [ ] 호스팅 존 1개
 - [ ] DNS 레코드 15개
 
-### 최종 검증 ✅
+### 최종 검증
 - [ ] terraform plan (변경사항 0개)
 - [ ] 상태 파일 백업
 - [ ] 출력값 확인
-
----
-
-**총 Import 대상**: 67개 리소스  
-**예상 소요 시간**: 2-3시간  
-**권장 작업 시간**: 업무 시간 외 (안전성)
-
-**작성자**: AWS Q Developer CLI  
-**작성일**: 2025-08-22  
-**버전**: 1.0
