@@ -4,7 +4,7 @@
 **목적**: 비디오 스트리밍 플랫폼의 Blue-Green 마이그레이션
 **도구**: Terraform, AWS CLI
 **생성일**: 2025-08-22
-**최종 수정일**: 2025-11-08
+**최종 수정일**: 2025-11-09
 
 ---
 
@@ -131,4 +131,3 @@ unretired-terraform/
 - **[마이그레이션 워크플로우](./docs/MIGRATION_WORKFLOW.md)**: 단계별 상세 작업 계획, 역할 분담, 비상 대응 계획을 포함합니다.
 - **[모듈 가이드](./docs/MODULES_GUIDE.md)**: 8개 모듈 각각의 상세한 리소스 구성, 변수, 출력값 정보를 제공합니다.
 - **[Import 가이드](./docs/IMPORT_GUIDE.md)**: 67개 리소스에 대한 `terraform import` 명령어 전체를 포함합니다.
-
